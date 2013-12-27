@@ -22,6 +22,11 @@
             padding: 50px;
             background: #FFF;
          }
+         
+         .style-guide-top {
+            float: right;
+            font-size: 0.7em;
+         }
       </style>
    </head>
 
@@ -29,7 +34,7 @@
       <h1>{{ title }}</h1>
       <hr />
 
-      <div class="style-guide-toc">
+      <div id="style-guide-toc">
          <ul>
             {% for name, path in snippets %}
                <li><a href="#snippet-{{name}}">{{ name }}</a></li>
@@ -42,7 +47,7 @@
             <hr />
 
             <div class="snippet" id="snippet-{{ name }}">
-               <h3>{{ name }}</h3>
+               <h3>{{ name }} <span class="style-guide-top"><a href="#style-guide-toc">Back to the Top</a></span></h3>
 
                {% include path %}
             </div>

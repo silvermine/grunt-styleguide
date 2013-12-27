@@ -10,7 +10,6 @@ module.exports = function(grunt) {
 
    grunt.registerMultiTask('styleguide', 'Generate a static HTML style guide', function() {
       var context = this.data,
-          output = fs.realpathSync(context.output),
           partials = fs.realpathSync(context.partials),
           html, template;
 
@@ -36,9 +35,9 @@ module.exports = function(grunt) {
 
       template = fs.readFileSync(context.template, {encoding: 'utf-8'});
       html = nunjucks.renderString(template, context);
-      fs.writeFileSync(output, html);
+      fs.writeFileSync(context.output, html);
 
-      grunt.log.writeln("Finished exporting styleguide:" + this.target + " to " + output);
+      grunt.log.writeln("Finished exporting styleguide:" + this.target + " to " + context.output);
    });
 
 };

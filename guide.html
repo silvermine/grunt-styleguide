@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--[if (gt IE 9)|!(IE)]>--> <html class="w3"        lang="{{ locale }}" xml:lang="{{ locale }}" dir="{{ langDirection }}"> <!--[endif]-->
+<!--[if lte IE 6]>           <html class="ieAny ie6" lang="{{ locale }}" xml:lang="{{ locale }}" dir="{{ langDirection }}"> <![endif]-->
+<!--[if IE 7]>               <html class="ieAny ie7" lang="{{ locale }}" xml:lang="{{ locale }}" dir="{{ langDirection }}"> <![endif]-->
+<!--[if IE 8]>               <html class="ieAny ie8" lang="{{ locale }}" xml:lang="{{ locale }}" dir="{{ langDirection }}"> <![endif]-->
+<!--[if IE 9]>               <html class="ieAny ie9" lang="{{ locale }}" xml:lang="{{ locale }}" dir="{{ langDirection }}"> <![endif]-->
+   <head>
+      <meta charset="utf-8" />
+      <title>{{ title }}</title>
+
+      {% for name, path in css %}
+         <link rel="stylesheet" href="../{{ path }}" />
+      {% endfor %}
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      <style>
+         body {
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 50px;
+            background: #FFF;
+         }
+      </style>
+   </head>
+
+   <body>
+      <h1>{{ title }}</h1>
+      <hr />
+
+      <div class="style-guide-toc">
+         <ul>
+            {% for name, path in snippets %}
+               <li><a href="#snippet-{{name}}">{{ name }}</a></li>
+            {% endfor %}
+         </ul>
+      </div>
+
+      <div class="snippets">
+         {% for name, path in snippets %}
+            <hr />
+
+            <div class="snippet" id="snippet-{{ name }}">
+               <h3>{{ name }}</h3>
+
+               {% include path %}
+            </div>
+         {% endfor %}
+      </div>
+   </body>
+</html>

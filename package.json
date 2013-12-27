@@ -1,0 +1,11 @@
+{
+  "name": "grunt-styleguide",
+  "version": "0.1.0",
+  "description": "A simple style guide generator for Grunt.js",
+
+  "main": "Gruntfile.js",
+
+  "devDependencies": {
+    "nunjucks": "git+https://git@github.com/jlongster/nunjucks.git#37ee7c358a95fe08608ff416fca8538a99db2259"
+  }
+}

@@ -23,6 +23,11 @@ module.exports = function(grunt) {
 
          grunt.log.writeln("Loading partials...");
 
+         // Filter out all files starting with '.' (*nix hidden files)
+         filenames = filenames.filter(function(item) {
+            return item.charAt(0) != '.';
+         });
+
          for (i = 0; i < filenames.length; i++) {
             name = filenames[i];
             grunt.log.writeln("   " + name);

@@ -13,6 +13,11 @@ module.exports = function(grunt) {
           partials = fs.realpathSync(context.partials),
           html, template;
 
+      // Allow 'css' to be a function that when called, returns an array of css files.
+      if (typeof context.css === 'function') {
+         context.css = context.css();
+      }
+
       context.template = context.template || (__dirname + "/../guide.html");
       context.template = fs.realpathSync(context.template);
 

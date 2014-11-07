@@ -4,6 +4,19 @@
 module.exports = function(grunt) {
    "use strict";
 
-   grunt.loadTasks('tasks');
-   grunt.registerTask('default', ['styleguide']);
+   grunt.loadNpmTasks('grunt-contrib-jshint');
+
+   grunt.initConfig({
+      jshint: {
+         options: {
+            jshintrc: true
+         },
+         src: [
+            'Gruntfile.js',
+            'tasks/*.js'
+         ]
+      },
+   });
+
+   grunt.registerTask('default', ['jshint']);
 };

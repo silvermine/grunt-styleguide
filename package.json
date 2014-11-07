@@ -6,7 +6,10 @@
   "dependencies": {
     "nunjucks": "git+https://git@github.com/jlongster/nunjucks.git#37ee7c358a95fe08608ff416fca8538a99db2259"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -13,6 +13,11 @@ module.exports = function(grunt) {
           partials = fs.realpathSync(context.partials),
           html, template;
 
+      // Allow 'css' to be a function that when called, returns an array of css files.
+      if (typeof context.css === 'function') {
+         context.css = context.css();
+      }
+
       context.template = context.template || (__dirname + "/../guide.html");
       context.template = fs.realpathSync(context.template);
 
@@ -22,6 +27,11 @@ module.exports = function(grunt) {
              i = 0, name;
 
          grunt.log.writeln("Loading partials...");
+
+         // Filter out all files starting with '.' (*nix hidden files)
+         filenames = filenames.filter(function(item) {
+            return item.charAt(0) != '.';
+         });
 
          for (i = 0; i < filenames.length; i++) {
             name = filenames[i];

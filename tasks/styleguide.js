@@ -5,49 +5,166 @@ module.exports = function(grunt) {
    'use strict';
 
    var fs = require('fs'),
-       nunjucks = require('nunjucks');
+       nunjucks = require('nunjucks'),
+       path = require('path'),
+       yaml = require('yaml-front-matter'),
+       _ = require('underscore');
 
 
-   grunt.registerMultiTask('styleguide', 'Generate a static HTML style guide', function() {
-      var context = this.data,
-          partials = fs.realpathSync(context.partials),
-          html, template;
+   grunt.loadNpmTasks('grunt-browserify');
+   grunt.loadNpmTasks('grunt-contrib-sass');
 
-      // Allow 'css' to be a function that when called, returns an array of css files.
-      if (typeof context.css === 'function') {
-         context.css = context.css();
+
+   function buildPartialsTree(partials) {
+      var tree = _.reduce(partials, function(memo, partial) {
+         var parent = _.reduce(partial.group, function(m, groupName) {
+            var group = _.find(m.subgroups, function(g) {
+               return g.name === groupName;
+            });
+
+            if (!group) {
+               group = { name: groupName, subgroups: [], partials: [] };
+               m.subgroups.push(group);
+            }
+
+            return group;
+         }, memo);
+         parent.partials.push({ name: partial.name, path: partial.path });
+         return memo;
+      }, { name: 'Partials', subgroups: [], partials: [] });
+
+      // Condense first level
+      return condensePartialsTree(tree);
+   }
+
+
+   function compileTemplates(sourceDir, partialsFlat) {
+      return _.map(partialsFlat, function(partial) {
+         var fullPath = path.join(sourceDir, partial.path),
+             data = yaml.loadFront( fs.readFileSync(fullPath) );
+
+         return {
+            path: partial.path,
+            metadata: _.omit(data, '__content'),
+            content: nunjucks.precompileString(data.__content, {
+               name: partial.path
+            })
+         };
+      });
+   }
+
+
+   function condensePartialsTree(tree) {
+      if (tree.partials.length === 0 && tree.subgroups.length === 1) {
+         tree = _.first(tree.subgroups);
       }
 
-      context.template = context.template || (__dirname + "/../guide.html");
-      context.template = fs.realpathSync(context.template);
+      tree.subgroups = _.map(tree.subgroups, function(group) {
+         return condensePartialsTree(group);
+      });
 
-      context.snippets = (function() {
-         var filenames = fs.readdirSync(partials),
-             snippets = {},
-             i = 0, name;
+      return tree;
+   }
 
-         grunt.log.writeln("Loading partials...");
 
-         // Filter out all files starting with '.' (*nix hidden files)
-         filenames = filenames.filter(function(item) {
-            return item.charAt(0) != '.';
-         });
+   function listPartials(cwd, globPattern) {
+      var partialsFlat = grunt.file.expand({ filter: 'isFile' }, path.join(cwd, globPattern));
 
-         for (i = 0; i < filenames.length; i++) {
-            name = filenames[i];
-            grunt.log.writeln("   " + name);
-            snippets[name.replace('.', '-')] = (context.partials + "/" + name);
+      return _.map(partialsFlat, function(p) {
+         var relPath = path.relative(cwd, p);
+
+         return {
+            group: path.dirname(relPath).split(path.sep),
+            name: path.basename(relPath, path.extname(relPath)),
+            path: relPath,
+         };
+      });
+   }
+
+
+   function runMultiTask(name, config) {
+      var taskID = _.uniqueId('styleguide-subtask-');
+      grunt.config(name + '.' + taskID, config);
+      grunt.task.run(name + ':' + taskID);
+   }
+
+
+   grunt.registerMultiTask('styleguide', 'Generate a style guide', function() {
+      var context = this.data,
+          templates, partialsFlat, templatePath, outputPath, templateHTML,
+          outputHTML;
+
+      // Resolve dynamic properties
+      _.each(_.keys(context), function(key) {
+         if (_.isFunction(context[key])) {
+            context[key] = context[key]();
          }
+      });
 
-         return snippets;
+      // Build partials tree
+      partialsFlat = listPartials(context.sourceDir, context.partials)
+      context.partials = buildPartialsTree(partialsFlat);
+
+      // Load and compile template partials
+      templates = compileTemplates(context.sourceDir, partialsFlat);
+
+      // Build metadata object containing metadata for each template
+      context.metadata = (function() {
+         var metadata = _.map(templates, function(partial) {
+            return [partial.path, partial.metadata];
+         });
+         return JSON.stringify( _.object(metadata) );
       }());
 
+      // Run Sass compiler over context.guideCSS
+      if (context.guideCSS) {
+         runMultiTask('sass', {
+            files: [
+               {
+                  expand: true,
+                  cwd: context.sourceDir,
+                  src: [ context.guideCSS ],
+                  dest: context.outputDir,
+                  ext: '.css'
+               }
+            ]
+         });
+      }
 
-      template = fs.readFileSync(context.template, {encoding: 'utf-8'});
-      html = nunjucks.renderString(template, context);
-      fs.writeFileSync(context.output, html);
+      // Run Browserify compiler over context.guideJS
+      if (context.guideJS) {
+         runMultiTask('browserify', {
+            files: [
+               {
+                  expand: true,
+                  cwd: context.sourceDir,
+                  src: [ context.guideJS ],
+                  dest: context.outputDir
+               }
+            ]
+         });
+      }
 
-      grunt.log.writeln("Finished exporting styleguide:" + this.target + " to " + context.output);
+      // Favicon?
+      if (context.favicon) {
+         grunt.file.copy(path.join(context.sourceDir, context.favicon), path.join(context.outputDir, context.favicon));
+      }
+
+      // Concatenate compiled templates into a single JS file
+      outputPath = path.join(context.outputDir, context.compiledPartialsName || 'templates.js');
+      fs.writeFileSync(outputPath, _.reduce(templates, function(memo, template) {
+         return memo + "\n\n" + template.content;
+      }, ""));
+
+      // Render final HTML template
+      templatePath = path.join(context.sourceDir, context.template);
+      outputPath = path.join(context.outputDir, context.template);
+      templateHTML = fs.readFileSync(templatePath, {encoding: 'utf-8'});
+      outputHTML = nunjucks.renderString(templateHTML, context);
+      fs.writeFileSync(outputPath, outputHTML);
+
+      // Log successful run
+      grunt.log.ok("Finished exporting styleguide:" + this.target + " to " + outputPath);
    });
 
 };

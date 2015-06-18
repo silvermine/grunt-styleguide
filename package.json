@@ -1,6 +1,6 @@
 {
   "name": "silvermine-styleguide",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A simple style guide generator for Grunt.js",
   "main": "Gruntfile.js",
   "dependencies": {

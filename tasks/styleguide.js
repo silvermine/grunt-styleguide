@@ -83,9 +83,9 @@ module.exports = function(grunt) {
 
 
    function runMultiTask(name, config) {
-      var taskID = _.uniqueId('styleguide-subtask-');
-      grunt.config(name + '.' + taskID, config);
-      grunt.task.run(name + ':' + taskID);
+      var label = 'styleguide-subtask';
+      grunt.config(name + '.' + label, config);
+      grunt.task.run(name + ':' + label);
    }
 
 

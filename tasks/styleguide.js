@@ -91,8 +91,12 @@ module.exports = function(grunt) {
 
    grunt.registerMultiTask('styleguide', 'Generate a style guide', function() {
       var context = this.data,
+          watch = context.enableWatch !== undefined ? context.enableWatch : true,
           templates, partialsFlat, templatePath, outputPath, templateHTML,
           outputHTML;
+
+      // nunjucks settings
+      nunjucks.configure({ watch: watch });
 
       // Resolve dynamic properties
       _.each(_.keys(context), function(key) {

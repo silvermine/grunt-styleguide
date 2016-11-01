@@ -61,6 +61,7 @@ that you can use it to compile almost any kind of static site you can imagine.
 | guideCSS | This is the path (relative to the sourceDir) of the CSS or Sass for your site. It will be run through the Sass compiler to be compiled into CSS in the outputDir .|
 | guideJS | This is the path (relative to the sourceDir) of the Javascript for your site. It will be run through the Browserify compiler and placed in the outputDir. |
 | favicon | Path (relative to the sourceDir) of your site's favicon. |
+| enableWatch | This is a boolean (default true) that may be used to enable or disable watching of template files in Nunjucks. |
 
 ## Example Templates
 

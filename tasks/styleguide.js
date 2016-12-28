@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 
 
    grunt.loadNpmTasks('grunt-browserify');
-   grunt.loadNpmTasks('grunt-contrib-sass');
+   grunt.loadNpmTasks('grunt-sass');
 
 
    function buildPartialsTree(partials) {
@@ -123,6 +123,11 @@ module.exports = function(grunt) {
       // Run Sass compiler over context.guideCSS
       if (context.guideCSS) {
          runMultiTask('sass', {
+            options: {
+               sourceMap: true,
+               indentWidth: 3,
+               outputStyle: 'expanded'
+            },
             files: [
                {
                   expand: true,

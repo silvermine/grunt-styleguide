@@ -137,3 +137,8 @@ at pre-compile time and made available to the server side template.
             <script type="text/javascript" src="main.js"></script>
         </body>
     </html>
+
+### Versions
+
+* 2.0.0 Update peerDependency to use grunt-sass (libSass) instead of grunt-contrib-sass (Ruby Sass)
+* 1.0.0 Initial project

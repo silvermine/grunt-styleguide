@@ -31,13 +31,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
-### Linux ###
-.*
-!.gitignore
-!.git*
-*~
-
-
 ### Windows ###
 # Windows image file caches
 Thumbs.db

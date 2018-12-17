@@ -54,7 +54,8 @@ module.exports = function(grunt) {
    }
 
 
-   function condensePartialsTree(tree) {
+   // NOTE: `ignore:line` is to silence a latedef warning
+   function condensePartialsTree(tree) { // jshint ignore:line
       if (tree.partials.length === 0 && tree.subgroups.length === 1) {
          tree = _.first(tree.subgroups);
       }
@@ -106,7 +107,7 @@ module.exports = function(grunt) {
       });
 
       // Build partials tree
-      partialsFlat = listPartials(context.sourceDir, context.partials)
+      partialsFlat = listPartials(context.sourceDir, context.partials);
       context.partials = buildPartialsTree(partialsFlat);
 
       // Load and compile template partials

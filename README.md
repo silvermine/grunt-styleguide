@@ -1,5 +1,9 @@
 # grunt-styleguide
 
+[![Build Status](https://travis-ci.com/silvermine/grunt-styleguide.svg?branch=master)](https://travis-ci.com/silvermine/grunt-styleguide)
+[![Dependency Status](https://david-dm.org/silvermine/grunt-styleguide.svg)](https://david-dm.org/silvermine/grunt-styleguide)
+[![Dev Dependency Status](https://david-dm.org/silvermine/grunt-styleguide/dev-status.svg)](https://david-dm.org/silvermine/grunt-styleguide#info=devDependencies&view=table)
+
 This grunt plugin is focused towards building a static file HMTL/CSS/JS
 styleguide. In reality, though, it's just a static site generator. This means,
 that you can use it to compile almost any kind of static site you can imagine.

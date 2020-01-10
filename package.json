@@ -4,21 +4,23 @@
   "description": "A simple style guide generator for Grunt.js",
   "main": "Gruntfile.js",
   "dependencies": {
-    "nunjucks": "3.1.6",
+    "nunjucks": "3.2.0",
     "underscore": "1.8.3",
-    "yaml-front-matter": "3.2.3"
+    "yaml-front-matter": "4.1.0"
   },
   "devDependencies": {
     "check-node-version": "4.0.2",
-    "grunt": "1.0.3",
+    "grunt": "1.0.4",
     "grunt-browserify": "5.3.0",
-    "grunt-contrib-jshint": "2.0.0",
-    "grunt-sass": "3.0.2"
+    "grunt-contrib-jshint": "2.1.0",
+    "grunt-sass": "3.1.0",
+    "node-sass": "4.13.0"
   },
   "peerDependencies": {
     "grunt": "^0.4.5",
-    "grunt-browserify": "^3.8.0",
-    "grunt-sass": "^2.0.0"
+    "grunt-browserify": "^5.3.0",
+    "grunt-sass": "^3.1.0",
+    "node-sass": "^4.13.0"
   },
   "scripts": {
     "test": "check-node-version --npm 6.13.4"

@@ -10,12 +10,19 @@ that you can use it to compile almost any kind of static site you can imagine.
 
 ## Sample Configuration
 
+    var sass = require('node-sass');
 
     grunt.initConfig({
         /**
          * Style Guide Compiler
          */
         styleguide: {
+            options: {
+                // Required to configure grunt-sass
+                gruntSassOptions: {
+                    implementation: sass,
+                },
+            },
             basic: {
                 // Compiler configuration:
 
@@ -54,6 +61,14 @@ that you can use it to compile almost any kind of static site you can imagine.
     grunt.loadNpmTasks('silvermine-styleguide');
 
 ## Configuration Reference
+
+### Plugin Options
+
+| Option | Description |
+| ------ | ----------- |
+| gruntSassOptions | The required [grunt-sass configuration](https://github.com/sindresorhus/grunt-sass#usage). The `implementation` property is required. |
+
+### Basic Task Configuration
 
 | Option | Description |
 | ------ | ----------- |

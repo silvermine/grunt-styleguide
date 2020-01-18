@@ -92,6 +92,7 @@ module.exports = function(grunt) {
 
    grunt.registerMultiTask('styleguide', 'Generate a style guide', function() {
       var context = this.data,
+          options = this.options(),
           watch = context.enableWatch !== undefined ? context.enableWatch : true,
           templates, partialsFlat, templatePath, outputPath, templateHTML,
           outputHTML;
@@ -123,12 +124,24 @@ module.exports = function(grunt) {
 
       // Run Sass compiler over context.guideCSS
       if (context.guideCSS) {
+         if (!options.gruntSassOptions) {
+            throw new Error(
+               'options.gruntSassOptions is required and must be an options object for the ' +
+               'grunt-sass plugin: https://github.com/sindresorhus/grunt-sass#usage'
+            );
+         }
+         if (!options.gruntSassOptions.implementation) {
+            throw new Error(
+               'options.gruntSassOptions.implementation is required to be ' +
+               'an implementation of SASS. See https://github.com/sindresorhus/grunt-sass#usage'
+            );
+         }
          runMultiTask('sass', {
-            options: {
+            options: _.extend({
                sourceMap: true,
                indentWidth: 3,
                outputStyle: 'expanded'
-            },
+            }, options.gruntSassOptions),
             files: [
                {
                   expand: true,

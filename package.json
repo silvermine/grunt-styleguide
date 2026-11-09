@@ -23,7 +23,7 @@
     "grunt-sass": "^3.0.0"
   },
   "scripts": {
-    "test": "check-node-version --npm 6.13.4",
+    "test": "check-node-version --npm 11.19.1",
     "commitlint": "commitlint --from 0f6e120"
   },
   "config": {
